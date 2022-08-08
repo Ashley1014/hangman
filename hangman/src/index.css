@@ -8,15 +8,10 @@ ol, ul {
   padding-left: 30px;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
 .keyboard {
-  margin-top: 48%;
-  margin-bottom: 48%;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 600px;
 }
 
 .status {
@@ -25,29 +20,79 @@ ol, ul {
 
 .letter {
   background: black;
-  border: 0px solid #999;
+  border: 1px solid #dddddd;
   color: #dddddd;
   float: left;
-  font-size: 45px;
+  font-size: 38px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
+  height: 40px;
   margin: 18px;
-  padding: 5px;
+  padding: 0px;
   text-align: center;
   vertical-align: center;
-  width: 34px;
+  width: 40px;
 }
+
+.letter:hover {
+  background: aquamarine;
+  color: black;
+}
+
+
 
 .letter:focus {
   outline: none;
 }
 
+.resetBtn {
+  background: black;
+  border: 1px solid #dddddd;
+  color: #dddddd;
+  float: left;
+  font-size: 38px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 40px;
+  margin: 18px;
+  padding: 0px;
+  text-align: center;
+  width: 120px;
+}
+
+.resetBtn:hover {
+  background: aquamarine;
+  color: black;
+}
+
 .game {
   display: flex;
+  flex: 1 2 auto;
+  flex-direction: column;
+}
+
+
+.top {
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+  border: aliceblue;
+  color: #dddddd;
+  display: flex;
+  flex: 2 1 auto;
   flex-direction: row;
 }
 
-.game-info {
-  margin-left: 20px;
+
+
+.guess {
+  color: white;
+  width: 200px;
+  margin-bottom: 0;
+  margin-top: 400px;
+}
+
+.gallow {
+  margin-top: 5%;
+  margin-bottom: 80%;
 }

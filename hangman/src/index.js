@@ -1,18 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import step0 from "./images/0.jpeg";
+import step1 from "./images/1.jpeg";
+import step2 from "./images/2.jpeg";
+import step3 from "./images/3.jpeg";
+import step4 from "./images/4.jpeg";
+import step5 from "./images/5.jpeg";
+import step6 from "./images/6.jpeg";
+import {randomWord} from "./words/food";
+
 import reportWebVitals from './reportWebVitals';
 
+const word = "apple";
 
 const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
+function GuessBar(props) {
+    let guessbar = "_ ";
+    return (
+        <div className="guess">
+            {guessbar.repeat(props.len)}
+        </div>
+    );
+}
+
 class Guess extends React.Component {
+    banner = "There are " + this.props.chancesLeft.toString() + " chances left!";
     render() {
         return (
             <div>
-
+                <div>
+                    {this.banner}
+                </div>
+                <GuessBar len = {word.length}/>
             </div>
         );
     }
@@ -21,8 +43,8 @@ class Guess extends React.Component {
 class Gallow extends React.Component {
     render() {
         return (
-            <div>
-
+            <div className="gallow">
+                <img alt={'gallows'} src={step0}/>
             </div>
         );
     }
@@ -59,8 +81,12 @@ class KeyBoard extends React.Component {
         return (
             <div className={"keyboard"}>
                 {letters.map((letter, i) => (
-                    <Letter value={letter}/>
+                    <Letter
+                        value={letter}
+                        onClick={this.handleClick()}
+                    />
                     ))}
+                <button className={'resetBtn'}>Reset</button>
             </div>
         );
     }
@@ -74,16 +100,27 @@ class KeyBoard extends React.Component {
 }
 
 class Game extends React.Component {
-    render() {
+    static imageSet = [step0, step1, step2, step3, step4, step5, step6];
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            chancesLeft: 6,
+            answer: word,
+            guessedLetters: new Set(),
+        }
+    }
+
+    render() {
         return (
             <div className="game">
-                <div className="game-board">
-                    <KeyBoard />
+                <div className="top">
+                    <Gallow />
+                    <Guess chancesLeft = {this.state.chancesLeft}/>
                 </div>
-                <div className="game-info">
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
+                <div className="keyboard">
+                    <KeyBoard
+                        onClick = {() => this.handleClick()}/>
                 </div>
             </div>
         );
