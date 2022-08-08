@@ -31,7 +31,7 @@ class Gallow extends React.Component {
 function Letter(props) {
     return (
         <button
-            className="square"
+            className="letter"
             onClick={props.onClick}
         >
             {props.value}
@@ -57,7 +57,7 @@ class KeyBoard extends React.Component {
     render() {
         const letters = this.state.letters;
         return (
-            <div>
+            <div className={"keyboard"}>
                 {letters.map((letter, i) => (
                     <Letter value={letter}/>
                     ))}
