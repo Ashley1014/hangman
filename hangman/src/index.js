@@ -38,6 +38,7 @@ class Game extends React.Component {
             chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
+            correctLetters: new Set(),
             status: "There are 6 chances left!",
             guessBar: "_ ".repeat(word.length),
             gallow_idx: 0,
@@ -133,6 +134,7 @@ class Game extends React.Component {
             {chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
+            correctLetters: new Set(),
             status: "There are 6 chances left!",
             guessBar: "_ ".repeat(word.length),
             gallow_idx: 0}
@@ -144,17 +146,19 @@ class Game extends React.Component {
         let gallow_idx = this.state.gallow_idx;
         let chancesLeft = this.state.chancesLeft;
         let guessedLetters = new Set(this.state.guessedLetters);
+        let correctLetters = new Set(this.state.correctLetters);
         //let hasWon = this.checkWinning();
         guessedLetters.add(value);
         if (chancesLeft > 0 && !this.isGuessed(value)) {
             chancesLeft--;
             if (this.state.answer.includes(value)) {
                 this.updateGuessBar(value);
+                correctLetters.add(value);
             } else {
                 gallow_idx++;
             }
         }
-        if (this.checkWinning(guessedLetters, chancesLeft)) {
+        if (this.checkWinning(correctLetters, chancesLeft)) {
             status = "You won!";
         } else if (chancesLeft > 0) {
             status = "There are " + chancesLeft + " chances left!";
@@ -166,6 +170,7 @@ class Game extends React.Component {
                 chancesLeft: chancesLeft,
                 gallow_idx: gallow_idx,
                 guessedLetters: guessedLetters,
+                correctLetters: correctLetters,
             }
         );
     }
