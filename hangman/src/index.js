@@ -8,7 +8,8 @@ import step3 from "./images/3.jpeg";
 import step4 from "./images/4.jpeg";
 import step5 from "./images/5.jpeg";
 import step6 from "./images/6.jpeg";
-import {randomWord} from "./words/food";
+import {randomFood} from "./words/food";
+import {randomLanguage} from "./words/language";
 
 import reportWebVitals from './reportWebVitals';
 
@@ -18,23 +19,43 @@ let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 alphabet = alphabet.map(letter => {return letter.toLowerCase();});
 
 function Letter(props) {
-    return (
-        <button
-            className="letter"
-            onClick={props.onClick}
-        >
-            {props.value}
-        </button>
-    );
+    let guessed = props.isGuessed(props.value);
+    if (guessed) {
+        return (
+            <button
+                onClick={props.onClick}
+                className="guessed"
+            >
+                {props.value}
+            </button>
+        );}
+    else {
+        return (
+            <button
+                onClick={props.onClick}
+                className="letter"
+            >
+                {props.value}
+            </button>
+        );
+    }
 }
 
 class Game extends React.Component {
     static imageSet = [step0, step1, step2, step3, step4, step5, step6];
-
     constructor(props) {
-        let word = randomWord();
+        let type;
+        let word;
+        if (Math.random() <= 0.5) {
+            type = "food";
+            word = randomFood();
+        } else {
+            type = "programming language";
+            word = randomLanguage();
+        }
         super(props);
         this.state = {
+            type: type,
             chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
@@ -88,9 +109,19 @@ class Game extends React.Component {
                     <Letter
                         value={letter}
                         onClick={() => this.handleLetterClick(letter)}
+                        isGuessed = {(value) => {return this.state.guessedLetters.has(value);}
+                        }
                     />
                 ))}
                 <button className={'resetBtn'} onClick={this.reset} >Reset</button>
+            </div>
+        );
+    }
+
+    renderStatus() {
+        return (
+            <div className="status">
+                {this.state.status}
             </div>
         );
     }
@@ -129,9 +160,18 @@ class Game extends React.Component {
     }
 
     reset() {
-        let word = randomWord();
+        let type;
+        let word;
+        if (Math.random() <= 0.5) {
+            type = "food";
+            word = randomFood();
+        } else {
+            type = "programming language";
+            word = randomLanguage();
+        }
         this.setState(
-            {chancesLeft: 6,
+            {type:type,
+                chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
             correctLetters: new Set(),
@@ -150,11 +190,11 @@ class Game extends React.Component {
         //let hasWon = this.checkWinning();
         guessedLetters.add(value);
         if (chancesLeft > 0 && !this.isGuessed(value)) {
-            chancesLeft--;
             if (this.state.answer.includes(value)) {
                 this.updateGuessBar(value);
                 correctLetters.add(value);
             } else {
+                chancesLeft--;
                 gallow_idx++;
             }
         }
@@ -179,10 +219,14 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="top">
-                    <label> Guess a food! </label>
-                    {this.renderGallow()}
-                    {this.state.status}
-                    {this.renderGuessBar()}
+                    <div className="byside">
+                        {this.renderGallow()}
+                        {this.renderStatus()}
+                    </div>
+                    <div className="byside">
+                        <label className="label"> Guess a {this.state.type}! </label>
+                        {this.renderGuessBar()}
+                    </div>
                 </div>
                 <div className="keyboard">
                     {this.renderKeyboard()}

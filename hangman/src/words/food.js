@@ -11,8 +11,8 @@ const FOOD = [
     "kiwi",
 ];
 
-function randomWord() {
+function randomFood() {
     return FOOD[Math.floor(Math.random() * FOOD.length)];
 }
 
-export { randomWord };
+export { randomFood };

@@ -1,5 +1,5 @@
 body {
-  font: 18px "Century Gothic", Futura, sans-serif;
+  font: 20px "Century Gothic", Futura, sans-serif;
   margin: 20px;
   background-color: black;
 }
@@ -15,7 +15,8 @@ ol, ul {
 }
 
 .status {
-  margin-bottom: 10px;
+  width: 60%;
+  margin-top: 100px;
 }
 
 .letter {
@@ -39,10 +40,24 @@ ol, ul {
   color: black;
 }
 
-
-
 .letter:focus {
   outline: none;
+}
+
+.guessed {
+  background: red;
+  border: 1px solid #dddddd;
+  color: #dddddd;
+  float: left;
+  font-size: 38px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 40px;
+  margin: 18px;
+  padding: 0px;
+  text-align: center;
+  vertical-align: center;
+  width: 40px;
 }
 
 .resetBtn {
@@ -67,10 +82,16 @@ ol, ul {
 
 .game {
   display: flex;
-  flex: 1 2 auto;
+  flex: 2 1 auto;
   flex-direction: column;
 }
 
+.label {
+  color: #dddddd;
+  width: 400px;
+  margin-top: 400px;
+  margin-bottom: 0;
+}
 
 .top {
   margin-left: auto;
@@ -83,11 +104,19 @@ ol, ul {
   flex-direction: row;
 }
 
+.byside {
+  display: flex;
+  flex-direction: row;
+  margin-right: auto;
+  margin-left: auto;
+  width: 70%;
+  flex: 3 1 auto;
+}
 
 
 .guess {
   color: white;
-  width: 200px;
+  width: 400px;
   margin-bottom: 0;
   margin-top: 400px;
 }
