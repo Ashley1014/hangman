@@ -46,7 +46,7 @@ class Game extends React.Component {
         this.reset = this.reset.bind(this);
     }
 
-    checkWinning() {
+    checkWinning(guessedLetters, chancesLeft) {
         const setsAreEqual = (a, b) => {
             if (a.size !== b.size) {
                 return false;
@@ -59,10 +59,10 @@ class Game extends React.Component {
 
         let answer = new Set(this.state.answer);
         console.log(answer);
-        let allGuessed = setsAreEqual(answer, this.state.guessedLetters);
-        if (this.state.chancesLeft >= 0 && allGuessed) {
+        let allGuessed = setsAreEqual(answer, guessedLetters);
+        if (chancesLeft >= 0 && allGuessed) {
             return true;
-        } else if (this.state.chancesLeft <= 0 && !allGuessed) {
+        } else if (chancesLeft <= 0 && !allGuessed) {
             return false;
         } else {
             return null;
@@ -140,19 +140,22 @@ class Game extends React.Component {
         let gallow_idx = this.state.gallow_idx;
         let chancesLeft = this.state.chancesLeft;
         let guessedLetters = new Set(this.state.guessedLetters);
-        this.checkWinning();
+        //let hasWon = this.checkWinning();
         if (chancesLeft > 0) {
             chancesLeft--;
             if (this.state.answer.includes(value)) {
                 guessedLetters.add(value);
                 this.updateGuessBar(value);
-            }
-            else {
+            } else {
                 gallow_idx++;
             }
-            status = "There are " + chancesLeft + " chances left!";
-        } else {
-            status = "You lost!"
+            if (this.checkWinning(guessedLetters, chancesLeft)) {
+                status = "You won!";
+            } else if (chancesLeft > 0) {
+                status = "There are " + chancesLeft + " chances left!";
+            } else {
+                status = "You lost!"
+            }
         }
         this.setState(
             {status : status,
