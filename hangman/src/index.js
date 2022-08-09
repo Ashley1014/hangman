@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import step0 from "./images/0.jpeg";
@@ -11,8 +11,6 @@ import step6 from "./images/6.jpeg";
 import {randomWord} from "./words/food";
 
 import reportWebVitals from './reportWebVitals';
-
-const word = "apple";
 
 let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
@@ -34,6 +32,7 @@ class Game extends React.Component {
     static imageSet = [step0, step1, step2, step3, step4, step5, step6];
 
     constructor(props) {
+        let word = randomWord();
         super(props);
         this.state = {
             chancesLeft: 6,
@@ -44,6 +43,10 @@ class Game extends React.Component {
             gallow_idx: 0,
         }
         this.reset = this.reset.bind(this);
+    }
+
+    isGuessed(value) {
+        return this.state.guessedLetters.has(value);
     }
 
     checkWinning(guessedLetters, chancesLeft) {
@@ -125,6 +128,7 @@ class Game extends React.Component {
     }
 
     reset() {
+        let word = randomWord();
         this.setState(
             {chancesLeft: 6,
             answer: word,
@@ -141,21 +145,21 @@ class Game extends React.Component {
         let chancesLeft = this.state.chancesLeft;
         let guessedLetters = new Set(this.state.guessedLetters);
         //let hasWon = this.checkWinning();
-        if (chancesLeft > 0) {
+        guessedLetters.add(value);
+        if (chancesLeft > 0 && !this.isGuessed(value)) {
             chancesLeft--;
             if (this.state.answer.includes(value)) {
-                guessedLetters.add(value);
                 this.updateGuessBar(value);
             } else {
                 gallow_idx++;
             }
-            if (this.checkWinning(guessedLetters, chancesLeft)) {
-                status = "You won!";
-            } else if (chancesLeft > 0) {
-                status = "There are " + chancesLeft + " chances left!";
-            } else {
-                status = "You lost!"
-            }
+        }
+        if (this.checkWinning(guessedLetters, chancesLeft)) {
+            status = "You won!";
+        } else if (chancesLeft > 0) {
+            status = "There are " + chancesLeft + " chances left!";
+        } else {
+            status = "You lost!"
         }
         this.setState(
             {status : status,
@@ -170,6 +174,7 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="top">
+                    <label> Guess a food! </label>
                     {this.renderGallow()}
                     {this.state.status}
                     {this.renderGuessBar()}
