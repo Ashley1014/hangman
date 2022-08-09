@@ -83,7 +83,6 @@ class Game extends React.Component {
         }
 
         let answer = new Set(this.state.answer);
-        console.log(answer);
         let allGuessed = setsAreEqual(answer, guessedLetters);
         if (chancesLeft >= 0 && allGuessed) {
             return true;
@@ -144,18 +143,12 @@ class Game extends React.Component {
         };
         const sourceStr = this.state.answer;
         const indices = indexOfAll(sourceStr, value);
-        console.log(indices);
         const guess_bar = this.state.guessBar.trim().split(" ");
-        console.log(indices.length);
         for (let i = 0; i < indices.length; i++) {
-            console.log("inside for");
             let idx = indices[i];
-            console.log("idx is ", idx);
             guess_bar[idx] = value;
         }
-        console.log(guess_bar);
         let guess_str = guess_bar.join(" ");
-        console.log(guess_str);
         this.setState({guessBar: guess_str});
     }
 
