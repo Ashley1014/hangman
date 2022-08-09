@@ -61,44 +61,6 @@ function Letter(props) {
     );
 }
 
-class KeyBoard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            letters: alphabet,
-        }
-    }
-
-    renderLetter(i) {
-        return <Letter
-            value = {this.state.letters[i]}
-            onClick = {() => this.handleClick()}
-            />;
-    }
-
-    render() {
-        const letters = this.state.letters;
-        return (
-            <div className={"keyboard"}>
-                {letters.map((letter, i) => (
-                    <Letter
-                        value={letter}
-                        onClick={this.handleClick()}
-                    />
-                    ))}
-                <button className={'resetBtn'}>Reset</button>
-            </div>
-        );
-    }
-
-    handleClick() {
-        return {
-
-        }
-
-    }
-}
-
 class Game extends React.Component {
     static imageSet = [step0, step1, step2, step3, step4, step5, step6];
 
@@ -108,7 +70,62 @@ class Game extends React.Component {
             chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
+            status: "There are 6 chances left!",
         }
+        this.reset = this.reset.bind(this);
+    }
+
+    renderKeyboard() {
+        return (
+            <div className={"keyboard"}>
+                {alphabet.map((letter, i) => (
+                    <Letter
+                        value={letter}
+                        onClick={() => this.handleLetterClick(letter)}
+                    />
+                ))}
+                <button className={'resetBtn'} onClick={this.reset} >Reset</button>
+            </div>
+        );
+    }
+
+    updateGuessBar() {
+
+
+    }
+
+    renderGuessBar() {
+        return (
+            <div>
+                <GuessBar len = {word.length}/>
+            </div>
+        );
+    }
+
+    reset() {
+        this.setState(
+            {chancesLeft: 6,
+            answer: word,
+            guessedLetters: new Set(),
+            status: "There are 6 chances left!"}
+        )
+    }
+
+    handleLetterClick(value) {
+        let status;
+        if (this.state.chancesLeft > 0) {
+            const chancesLeft = this.state.chancesLeft - 1;
+            this.setState({chancesLeft: chancesLeft});
+            if (this.state.answer.includes(value)) {
+                const cloned = new Set(this.state.guessedLetters);
+                cloned.add(value);
+            }
+            console.log(this.state.chancesLeft);
+            status = "There are " + chancesLeft + " chances left!";
+        } else {
+            status = "You lost!"
+        }
+        this.setState({status : status});
     }
 
     render() {
@@ -116,11 +133,11 @@ class Game extends React.Component {
             <div className="game">
                 <div className="top">
                     <Gallow />
-                    <Guess chancesLeft = {this.state.chancesLeft}/>
+                    {this.state.status}
+                    {this.renderGuessBar()}
                 </div>
                 <div className="keyboard">
-                    <KeyBoard
-                        onClick = {() => this.handleClick()}/>
+                    {this.renderKeyboard()}
                 </div>
             </div>
         );
