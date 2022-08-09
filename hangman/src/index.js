@@ -14,41 +14,10 @@ import reportWebVitals from './reportWebVitals';
 
 const word = "apple";
 
-const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
-function GuessBar(props) {
-    let guessbar = "_ ";
-    return (
-        <div className="guess">
-            {guessbar.repeat(props.len)}
-        </div>
-    );
-}
-
-class Guess extends React.Component {
-    banner = "There are " + this.props.chancesLeft.toString() + " chances left!";
-    render() {
-        return (
-            <div>
-                <div>
-                    {this.banner}
-                </div>
-                <GuessBar len = {word.length}/>
-            </div>
-        );
-    }
-}
-
-class Gallow extends React.Component {
-    render() {
-        return (
-            <div className="gallow">
-                <img alt={'gallows'} src={step0}/>
-            </div>
-        );
-    }
-}
+alphabet = alphabet.map(letter => {return letter.toLowerCase();});
 
 function Letter(props) {
     return (
@@ -71,8 +40,41 @@ class Game extends React.Component {
             answer: word,
             guessedLetters: new Set(),
             status: "There are 6 chances left!",
+            guessBar: "_ ".repeat(word.length),
+            gallow_idx: 0,
         }
         this.reset = this.reset.bind(this);
+    }
+
+    checkWinning() {
+        const setsAreEqual = (a, b) => {
+            if (a.size !== b.size) {
+                return false;
+            }
+
+            return Array.from(a).every(element => {
+                return b.has(element);
+            });
+        }
+
+        let answer = new Set(this.state.answer);
+        console.log(answer);
+        let allGuessed = setsAreEqual(answer, this.state.guessedLetters);
+        if (this.state.chancesLeft >= 0 && allGuessed) {
+            return true;
+        } else if (this.state.chancesLeft <= 0 && !allGuessed) {
+            return false;
+        } else {
+            return null;
+        }
+    }
+
+    renderGallow() {
+        return (
+            <div className="gallow">
+                <img alt={'gallow'} src={Game.imageSet[this.state.gallow_idx]}/>
+            </div>
+        );
     }
 
     renderKeyboard() {
@@ -89,17 +91,37 @@ class Game extends React.Component {
         );
     }
 
-    updateGuessBar() {
-
-
-    }
-
     renderGuessBar() {
         return (
-            <div>
-                <GuessBar len = {word.length}/>
+            <div className="guess">
+                {this.state.guessBar}
             </div>
         );
+    }
+
+    updateGuessBar(value) {
+        const indexOfAll = (sourceStr, searchStr) => {
+            const indices = [];
+            for(let i=0; i<sourceStr.length; i++) {
+                if (sourceStr[i] === searchStr) indices.push(i);
+            }
+            return indices;
+        };
+        const sourceStr = this.state.answer;
+        const indices = indexOfAll(sourceStr, value);
+        console.log(indices);
+        const guess_bar = this.state.guessBar.trim().split(" ");
+        console.log(indices.length);
+        for (let i = 0; i < indices.length; i++) {
+            console.log("inside for");
+            let idx = indices[i];
+            console.log("idx is ", idx);
+            guess_bar[idx] = value;
+        }
+        console.log(guess_bar);
+        let guess_str = guess_bar.join(" ");
+        console.log(guess_str);
+        this.setState({guessBar: guess_str});
     }
 
     reset() {
@@ -107,32 +129,45 @@ class Game extends React.Component {
             {chancesLeft: 6,
             answer: word,
             guessedLetters: new Set(),
-            status: "There are 6 chances left!"}
+            status: "There are 6 chances left!",
+            guessBar: "_ ".repeat(word.length),
+            gallow_idx: 0}
         )
     }
 
     handleLetterClick(value) {
         let status;
-        if (this.state.chancesLeft > 0) {
-            const chancesLeft = this.state.chancesLeft - 1;
-            this.setState({chancesLeft: chancesLeft});
+        let gallow_idx = this.state.gallow_idx;
+        let chancesLeft = this.state.chancesLeft;
+        let guessedLetters = new Set(this.state.guessedLetters);
+        this.checkWinning();
+        if (chancesLeft > 0) {
+            chancesLeft--;
             if (this.state.answer.includes(value)) {
-                const cloned = new Set(this.state.guessedLetters);
-                cloned.add(value);
+                guessedLetters.add(value);
+                this.updateGuessBar(value);
             }
-            console.log(this.state.chancesLeft);
+            else {
+                gallow_idx++;
+            }
             status = "There are " + chancesLeft + " chances left!";
         } else {
             status = "You lost!"
         }
-        this.setState({status : status});
+        this.setState(
+            {status : status,
+                chancesLeft: chancesLeft,
+                gallow_idx: gallow_idx,
+                guessedLetters: guessedLetters,
+            }
+        );
     }
 
     render() {
         return (
             <div className="game">
                 <div className="top">
-                    <Gallow />
+                    {this.renderGallow()}
                     {this.state.status}
                     {this.renderGuessBar()}
                 </div>
